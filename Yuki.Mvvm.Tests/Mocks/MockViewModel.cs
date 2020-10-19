@@ -49,15 +49,15 @@ namespace Yuki.Mvvm.Tests.Mocks
         }
 
         /// <summary>
-        ///     Gets the <see cref="int"/> which is implicitly dependent on <see cref="Integer"/>.
+        ///     Gets the <see cref="int"/> which is implicitly dependant on <see cref="Integer"/>.
         /// </summary>
-        public int ImplicitlyDependentInteger => Integer * 2;
+        public int ImplicitlyDependantInteger => Integer * 2;
 
         /// <summary>
-        ///     Gets or sets the <see cref="int"/> which is explicitly dependent on <see cref="Integer"/>.
+        ///     Gets or sets the <see cref="int"/> which is explicitly dependant on <see cref="Integer"/>.
         /// </summary>
-        [Dependent]
-        public int ExplicitlyDependentInteger
+        [Dependant(nameof(Integer))]
+        public int ExplicitlyDependantInteger
         {
             get => Integer * 5;
 

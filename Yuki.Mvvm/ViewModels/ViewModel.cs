@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-using Yuki.Mvvm.Attributes;
 using Yuki.Mvvm.Commands;
 
 namespace Yuki.Mvvm.ViewModels
@@ -17,19 +15,8 @@ namespace Yuki.Mvvm.ViewModels
     public abstract class ViewModel : INotifyPropertyChanging, INotifyPropertyChanged
     {
         /// <summary>
-        ///     The <see cref="IReadOnlyCollection{T}"/> of property names who only have a getter methods.
-        /// </summary>
-        private readonly IReadOnlyCollection<string> _getOnlyProperties;
-
-        /// <summary>
-        ///     The <see cref="IReadOnlyCollection{T}"/> of property names who have been explicitly declared as a
-        ///     dependent property with the <see cref="DependentAttribute"/>.
-        /// </summary>
-        private readonly IReadOnlyCollection<string> _explicitlyDependentProperties;
-
-        /// <summary>
-        ///     The <see cref="Dictionary{TKey,TValue}"/> of properties and values, where the Key is the property name
-        ///     and the value is the properties value.
+        ///     The <see cref="Dictionary{TKey,TValue}"/> of property values, where the Key is the property name and the
+        ///     value is the properties value.
         /// </summary>
         private readonly Dictionary<string, object> _propertyValues;
 
@@ -49,32 +36,8 @@ namespace Yuki.Mvvm.ViewModels
         protected ViewModel()
         {
             _propertyValues = new Dictionary<string, object>();
-            _getOnlyProperties = FindGetOnlyProperties().ToList().AsReadOnly();
-            _explicitlyDependentProperties = FindDependentProperties().ToList().AsReadOnly();
+            PropertyDependencyManager.EnsureDependenciesInitializedFor(this);
         }
-
-        /// <summary>
-        ///     Gets an <see cref="ICollection{T}"/> of property names who do not have setter methods.
-        /// </summary>
-        /// <returns>
-        ///     The <see cref="ICollection{T}"/> of property names.
-        /// </returns>
-        private ICollection<string> FindGetOnlyProperties() =>
-            GetType().GetProperties()
-                     .Where(p => p.SetMethod == null)
-                     .Select(p => p.Name).ToList();
-
-        /// <summary>
-        ///     Gets an <see cref="ICollection{T}"/> of property names who have a <see cref="DependentAttribute"/>.
-        /// </summary>
-        /// <returns>
-        ///     The <see cref="ICollection{T}"/> of property names.
-        /// </returns>
-        private ICollection<string> FindDependentProperties() =>
-            GetType().GetProperties()
-                     .Where(p => p.GetCustomAttribute<DependentAttribute>() != null)
-                     .Select(p => p.Name)
-                     .ToList();
 
         /// <summary>
         ///     Gets the value of the property.
@@ -160,17 +123,19 @@ namespace Yuki.Mvvm.ViewModels
             OnPropertyChanging(propertyName);
 
             // Add a new value, or update an existing one
+            // ReSharper disable once AssignNullToNotNullAttribute
+            //  ^ Already checking in EnsurePropertyNameIsValid
             _propertyValues[propertyName] = value;
 
             // Notify
             OnPropertyChanged(propertyName);
-
-            // Also notify any dependent properties
-            List<string> dependentProperties = _getOnlyProperties.ToList();
-            dependentProperties.AddRange(_explicitlyDependentProperties);
-            foreach (string dependentPropertyName in dependentProperties)
+            
+            // Notify any Dependant properties
+            // Bug: Moving this inside of the OnPropertyChanged method would be nice, but it causes a StackOverflow exception
+            string[] dependantProperties = PropertyDependencyManager.For(this).GetDependenciesFor(propertyName);
+            foreach (string dependantPropertyName in dependantProperties)
             {
-                OnPropertyChanged(dependentPropertyName);
+                OnPropertyChanged(dependantPropertyName);
             }
         }
 
@@ -215,15 +180,15 @@ namespace Yuki.Mvvm.ViewModels
         ///     <see cref="Exception"/> will be thrown.
         /// </summary>
         /// <param name="propertyName">
-        ///        The name of the property.
+        ///     The name of the property.
         /// </param>
+        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+        //     ^ Yup. That's the whole point...
         private void EnsurePropertyNameIsValid(string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
-                throw new ArgumentNullException(
-                    nameof(propertyName),
-                    "The property name cannot be null or empty");
+                throw new ArgumentNullException(nameof(propertyName));
             }
         }
     }

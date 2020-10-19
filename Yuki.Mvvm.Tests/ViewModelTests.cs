@@ -180,8 +180,8 @@ namespace Yuki.Mvvm.Tests
             Assert.IsTrue(canExecuteChangedWasCalled);
             Assert.Contains(nameof(viewModel.Integer), propertiesChanging);
             Assert.Contains(nameof(viewModel.Integer), propertiesChanged);
-            Assert.Contains(nameof(viewModel.ImplicitlyDependentInteger), propertiesChanged);
-            Assert.Contains(nameof(viewModel.ExplicitlyDependentInteger), propertiesChanged);
+            Assert.Contains(nameof(viewModel.ImplicitlyDependantInteger), propertiesChanged);
+            Assert.Contains(nameof(viewModel.ExplicitlyDependantInteger), propertiesChanged);
         }
     }
 }
