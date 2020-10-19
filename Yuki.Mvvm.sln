@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Mvvm", "Yuki.Mvvm\Yuki.Mvvm.csproj", "{348FCCDB-1108-4130-A7F3-70D7987397CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuki.Mvvm.Tests", "Yuki.Mvvm.Tests\Yuki.Mvvm.Tests.csproj", "{F499CE5B-2B6F-45E4-A9C2-5C222FB317CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{348FCCDB-1108-4130-A7F3-70D7987397CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348FCCDB-1108-4130-A7F3-70D7987397CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348FCCDB-1108-4130-A7F3-70D7987397CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348FCCDB-1108-4130-A7F3-70D7987397CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F499CE5B-2B6F-45E4-A9C2-5C222FB317CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F499CE5B-2B6F-45E4-A9C2-5C222FB317CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F499CE5B-2B6F-45E4-A9C2-5C222FB317CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F499CE5B-2B6F-45E4-A9C2-5C222FB317CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
